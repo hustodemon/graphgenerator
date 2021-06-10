@@ -88,29 +88,35 @@
  :set-graph
  (fn [db [_ graph]]
    (.log js/console graph)
-   (assoc db :graph graph)))
+   (-> db
+       (assoc :graph graph)
+       (assoc :generator/in-progress? false))))
 
 
-(rf/reg-event-fx
+(rf/reg-event-db
  :set-error
- (fn [_ [_ err]]
-   (js/alert (:response err))))
+ (fn [db [_ err]]
+   (js/alert (:response err))
+   (assoc db :generator/in-progress? false)))
 
 
-(def endpoints
-  {:dot     "generate-dot"
-   :rhizome "generate"})
 (rf/reg-event-fx
  :generate
  (fn [cofx [_ _]]
-   (let [selected-type (get-in cofx [:db :generator/selected-graph-type])]
+   (let [db            (:db cofx)
+         selected-type (:generator/selected-graph-type db)
+         graphviz-tool (:generator/selected-graphviz-type db)]
      {:http-xhrio {:method          :post
-                   :uri             (str "/" (get endpoints selected-type))
+                   :uri             (str "/generate-graph"
+                                         "?type=" (name selected-type)
+                                         "&tool=" (name graphviz-tool))
                    :params          (get-in cofx [:db :generator/input])
-                   :format          (ajax/transit-request-format)
+                   :format          (ajax/text-request-format)
                    :response-format (ajax/raw-response-format)
                    :on-success      [:set-graph]
-                   :on-failure      [:set-error]}})))
+                   :on-failure      [:set-error]}
+      :db         (assoc db :generator/in-progress? true)})))
+
 
 ;;subscriptions
 
@@ -157,9 +163,19 @@
     (:generator/graph-types db)))
 
 (rf/reg-sub
+  :generator/graphviz-types
+  (fn [db _]
+    (:generator/graphviz-types db)))
+
+(rf/reg-sub
   :generator/selected-graph-type
   (fn [db _]
     (:generator/selected-graph-type db)))
+
+(rf/reg-sub
+ :generator/selected-graphviz-type
+  (fn [db _]
+    (:generator/selected-graphviz-type db)))
 
 (rf/reg-sub
  :generator/presets
@@ -170,3 +186,8 @@
  :generator/selected-preset
   (fn [db _]
     (:generator/selected-preset db)))
+
+(rf/reg-sub
+ :generator/in-progress?
+  (fn [db _]
+    (:generator/in-progress? db)))

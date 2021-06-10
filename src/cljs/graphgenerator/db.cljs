@@ -147,15 +147,31 @@ digraph {
    :rhizome [{:id 1 :label "Simple directed graph" :text (nth programms 2)}
              {:id 2 :label "Programming languages" :text (nth programms 3)}]})
 
+
 (def initial-db
-  {:generator/graph-types         [{:id :dot
+  {:generator/graph-types         [{:id    :dot
                                     :label "Dot"}
-                                   {:id :rhizome
+                                   {:id    :rhizome
                                     :label "Rhizome"}]
    :generator/selected-graph-type :dot
-   :generator/presets             presets
-   :generator/selected-preset     [:dot 0]
-   :generator/input               ""})
+
+   :generator/graphviz-types         [{:id    :dot
+                                       :label "Dot"}
+                                      {:id    :neato
+                                       :label "Neato"}
+                                      {:id    :twopi
+                                       :label "Twopi"}
+                                      {:id    :circo
+                                       :label "Circo"}
+                                      {:id    :fdp
+                                       :label "FDP"}]
+   :generator/selected-graphviz-type :dot
+
+   :generator/presets         presets
+   :generator/selected-preset [:dot 0]
+
+   :generator/input        ""
+   :generator/in-progress? false})
 
 
 

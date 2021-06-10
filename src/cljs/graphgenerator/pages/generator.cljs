@@ -28,56 +28,94 @@
     (fn []
       (let [choices (cons {:id 0 :label "<nothing>" :text "nothing"}
                           (get @presets @graph-type))]
-        [rc/single-dropdown
-         :choices   choices
-         :model     (second @selected-preset)
-         :width     "200px"
-         :on-change (fn [val]
-                      (rf/dispatch
-                       [:generator/select-preset
-                        [@graph-type val]]))]))))
+        [:div
+         [rc/title
+          :label "Select preset (optional)"
+          :level :level4]
+         [rc/single-dropdown
+          :choices   choices
+          :model     (second @selected-preset)
+          :width     "200px"
+          :on-change (fn [val]
+                       (rf/dispatch
+                        [:generator/select-preset
+                         [@graph-type val]]))]]))))
 
 
 (defn- selection []
   (let [graph-types (rf/subscribe [:generator/graph-types])
         graph-type (rf/subscribe [:generator/selected-graph-type])]
     (fn []
-      [rc/single-dropdown
-       :choices @graph-types
-       :model graph-type
-       :width "200px"
-       :on-change (fn [val] ;; todo a single dispatch
-                    (rf/dispatch [:common/set-value
-                                  [val 0]
-                                  :generator/selected-preset])
-                    (rf/dispatch [:common/set-value
-                                  val
-                                  :generator/selected-graph-type]))])))
+      [:div
+       [rc/title
+        :label "Select graph type"
+        :level :level4]
+       [rc/single-dropdown
+        :choices @graph-types
+        :model graph-type
+        :width "200px"
+        :on-change (fn [val] ;; todo a single dispatch
+                     (rf/dispatch [:common/set-value
+                                   [val 0]
+                                   :generator/selected-preset])
+                     (rf/dispatch [:common/set-value
+                                   val
+                                   :generator/selected-graph-type]))]])))
+
+;; todo description of the UI elements
+(defn- graphviz-tool-selection []
+  (let [graphviz-types (rf/subscribe [:generator/graphviz-types])
+        graphviz-type  (rf/subscribe [:generator/selected-graphviz-type])
+        graph-type     (rf/subscribe [:generator/selected-graph-type])]
+    (fn []
+      (when (= @graph-type :dot)
+        [:div
+         [rc/title
+          :label "Select graphviz program"
+          :level :level4]
+         [rc/single-dropdown
+          :choices @graphviz-types
+          :model graphviz-type
+          :width "200px"
+          :on-change (fn [val] ;; todo a single dispatch
+                       (rf/dispatch [:common/set-value
+                                     val
+                                     :generator/selected-graphviz-type]))]]))))
 
 
 (defn gen-page []
-  (let [graph (rf/subscribe [:graph])]
+  (let [graph        (rf/subscribe [:graph])
+        in-progress? (rf/subscribe [:generator/in-progress?])]
     (fn []
       [:section.section>div.container>div.content
        [rc/v-box
         :gap "20px"
+        :align :center
         :children
         [[rc/h-box
           :gap "10px"
+        :align :center
           :children
           [[text-area]
            [rc/v-box
             :gap "10px"
             :children
             [[selection]
+             [graphviz-tool-selection]
              [presets]
              [rc/button
               :label "Generate!"
+              :disabled? @in-progress?
               :on-click #(rf/dispatch [:generate])
               :class "btn-primary"
               :style {:width "200px"}]
              ]]
            ]]
          [:div
-          {:dangerouslySetInnerHTML {:__html @graph}
-           :style                   {:text-align "center"}}] ]]])))
+          (if @in-progress?
+            [rc/throbber
+             :size :large
+             :style {:text-align "center"}]
+            [:div
+             {:dangerouslySetInnerHTML {:__html @graph}
+              :style                   {:text-align "center"}}])]]]])))
