@@ -19,12 +19,27 @@
 ;;
 ;; Throw an ex-info with :msg if something goes wrong."
 (def valid-commands #{"dot" "neato" "twopi" "circo" "fdp"})
+(def output-encodings {"svg" "UTF-8"
+                       "png" :bytes})
 
-(defmethod generate-graph :dot [{:keys [src tool]}]
+(defmethod generate-graph :dot [{:keys [src tool output]}]
+  ;; todo malli for validation
   (when-not (contains? valid-commands tool)
     (throw (ex-info "Invalid command" {:data tool})))
-  (let [command                (str "/usr/bin/" tool)
-        {:keys [exit out err]} (shell/sh command "-Tsvg" :in src)]
+  (when (and (some? output)
+             (not (contains? output-encodings output)))
+    (throw (ex-info "Invalid output type" {:data output})))
+
+  (let [command       (str "/usr/bin/" tool)
+        output-type   (or output "svg")
+        output-param  (str "-T" output-type)
+        encoding      (get output-encodings output-type "UTF-8")
+        {:keys [exit
+                out
+                err]} (shell/sh command
+                                output-param
+                                :in src
+                                :out-enc encoding)]
     (if (= 0 exit)
       out
       (throw (ex-info "Graphviz error" {:msg err})))))

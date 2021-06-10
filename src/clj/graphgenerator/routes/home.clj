@@ -22,9 +22,10 @@
   (try
     (response/ok
      (generator/generate-graph
-      {:type (keyword (get-in req [:params :type]))
-       :tool (get-in req [:params :tool])
-       :src  (:body req)}))
+      {:type   (keyword (get-in req [:params :type]))
+       :tool   (get-in req [:params :tool])
+       :output (get-in req [:params :output])
+       :src    (:body req)}))
     (catch Throwable e
       (response/internal-server-error (-> e .getData :msg)))))
 
