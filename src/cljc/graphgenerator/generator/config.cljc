@@ -15,7 +15,13 @@
   {:dot   {:executable "/usr/bin/dot"
            :label      "Dot"}
    :neato {:executable "/usr/bin/neato"
-           :label      "Neato"}})
+           :label      "Neato"}
+   :twopi {:executable "/usr/bin/twopi"
+           :label      "Twopi"}
+   :circo {:executable "/usr/bin/circo"
+           :label      "Circo"}
+   :fdp   {:executable "/usr/bin/fdp"
+           :label      "FDP"}})
 
 
 (defn find-format-by-parameter [param value]

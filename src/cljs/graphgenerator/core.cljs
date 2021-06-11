@@ -50,7 +50,7 @@
 
 
 (defn page []
-  (if-let [page @(rf/subscribe [:common/page])]
+  (when-let [page @(rf/subscribe [:common/page])]
     [:div
      [navbar]
      [page]]))

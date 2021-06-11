@@ -77,7 +77,6 @@
     ;; not sure if this works well for nested stuff
     (let [presets-of-type (get-in db [:generator/presets preset-graph-type])
           preset          (first (filter #(= preset-id (:id %)) presets-of-type))]
-    (prn "selecting preset" (cons :generator/presets preset))
       (-> db
           (assoc :generator/selected-preset [preset-graph-type preset-id])
           (assoc :generator/input (:text preset))
@@ -87,7 +86,6 @@
 (rf/reg-event-db
  :set-graph
  (fn [db [_ graph]]
-   (.log js/console graph)
    (-> db
        (assoc :graph graph)
        (assoc :generator/in-progress? false))))
@@ -107,7 +105,7 @@
          selected-type    (:generator/selected-graph-type db)
          graphviz-program (:generator/selected-graphviz-type db)]
      {:http-xhrio {:method          :post
-                   :uri             (str "/generate-graph"
+                   :uri             (str "/generate"
                                          "?type=" (name selected-type)
                                          "&program=" (name graphviz-program))
                    :params          (get-in cofx [:db :generator/input])
