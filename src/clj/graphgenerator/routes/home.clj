@@ -12,9 +12,8 @@
 
 
 (defn docs [_]
-  (fn [_]
-    (-> (response/ok (-> "docs/docs.md" io/resource slurp))
-        (response/header "Content-Type" "text/plain; charset=utf-8"))))
+  (-> (response/ok (-> "docs/docs.md" io/resource slurp))
+      (response/header "Content-Type" "text/plain; charset=utf-8")))
 
 
 (defn home-routes []
@@ -22,5 +21,4 @@
    {:middleware [middleware/wrap-csrf
                  middleware/wrap-formats]}
    ["/" {:get home-page}]
-   ["/docs"
-    {:get docs}]])
+   ["/docs" {:get docs}]])
