@@ -113,6 +113,7 @@
                    :params          (get-in cofx [:db :generator/input])
                    :format          (ajax/text-request-format)
                    :response-format (ajax/raw-response-format)
+                   :headers         {"Accept" "image/svg+xml"}
                    :on-success      [:set-graph]
                    :on-failure      [:set-error]}
       :db         (assoc db :generator/in-progress? true)})))

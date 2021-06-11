@@ -6,17 +6,17 @@
 
 
 (def formats
-  [{:id :svg :file-encoding "UTF-8" :graphviz-param "svg" :media-type "image/svg+xml"}
-   {:id :png :file-encoding :bytes  :graphviz-param "png" :media-type "image/png"}
-   {:id :pdf :file-encoding :bytes  :graphviz-param "pdf" :media-type "application/pdf"}])
+  [{:id :svg :file-encoding "UTF-8" :output-format "svg" :media-type "image/svg+xml"}
+   {:id :png :file-encoding :bytes  :output-format "png" :media-type "image/png"}
+   {:id :pdf :file-encoding :bytes  :output-format "pdf" :media-type "application/pdf"}])
 
 
 (def graphviz-programs
-  {:dot   {:executable "/usr/bin/doc"
+  {:dot   {:executable "/usr/bin/dot"
            :label      "Dot"}
-   :neato {:executable "/usr/bin/doc"
+   :neato {:executable "/usr/bin/neato"
            :label      "Neato"}})
 
 
-(defn find-format-by-media-type [media-type]
-  (first (filter #(= media-type (:media-type %)) formats)))
+(defn find-format-by-parameter [param value]
+  (first (filter #(= value (get % param)) formats)))

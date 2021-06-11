@@ -143,10 +143,10 @@ digraph {
 
 ;; todo do not steal from better ppl and come up with custom examples :)
 (def presets
-  {:dot     [{:id 1 :label "preset1dot" :text (nth programms 0)}
-             {:id 2 :label "preset2dot" :text (nth programms 1)}]
-   :rhizome [{:id 1 :label "Simple directed graph" :text (nth programms 2)}
-             {:id 2 :label "Programming languages" :text (nth programms 3)}]})
+  {:graphviz [{:id 1 :label "Preset 1" :text (nth programms 0)}
+              {:id 2 :label "Preset 2" :text (nth programms 1)}]
+   :rhizome  [{:id 1 :label "Simple directed graph" :text (nth programms 2)}
+              {:id 2 :label "Programming languages" :text (nth programms 3)}]})
 
 
 (def graphviz-types
@@ -160,11 +160,11 @@ digraph {
 
 
 (def initial-db
-  {:generator/graph-types         [{:id    :dot
-                                    :label "Dot"}
+  {:generator/graph-types         [{:id    :graphviz
+                                    :label "Graphviz"}
                                    {:id    :rhizome
                                     :label "Rhizome"}]
-   :generator/selected-graph-type :dot
+   :generator/selected-graph-type :graphviz
 
    ;; configured in shared config
    :generator/graphviz-types         graphviz-types

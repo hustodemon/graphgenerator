@@ -68,7 +68,7 @@
         graphviz-type  (rf/subscribe [:generator/selected-graphviz-type])
         graph-type     (rf/subscribe [:generator/selected-graph-type])]
     (fn []
-      (when (= @graph-type :dot)
+      (when (= @graph-type :graphviz)
         [:div
          [rc/title
           :label "Select graphviz program"

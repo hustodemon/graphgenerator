@@ -27,9 +27,9 @@
   "
   [req]
   (let [accept-type (get-in req [:headers "accept"] "image/svg+xml")
-        graph-type  (keyword (get-in req [:params :type] "dot"))
-        program     (get-in req [:params :program])
-        format      (config/find-format-by-media-type accept-type)]
+        graph-type  (keyword (get-in req [:params :type] "graphviz"))
+        program     (keyword (get-in req [:params :program] "dot"))
+        fmt         (config/find-format-by-parameter :media-type accept-type)]
     (try
       {:status  200
        :headers {"Content-Type" accept-type}
@@ -37,9 +37,9 @@
        (generator/generate-graph
         {:type    graph-type
          :program program
-         :output  (:graphviz-param format)
+         :fmt     fmt
          :src     (:body req)})}
-      (catch Throwable e
+      (catch clojure.lang.ExceptionInfo e
         (response/internal-server-error (-> e .getData :msg))))))
 
 

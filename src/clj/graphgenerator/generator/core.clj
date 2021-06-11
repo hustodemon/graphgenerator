@@ -11,7 +11,7 @@
 
 (defmulti generate-graph
   "Multimethod for generating graphs"
-  (fn [graph] (:type graph)))
+  :type)
 
 
 ;;
@@ -19,28 +19,23 @@
 ;; the Dot data (stream, string, ...).
 ;;
 ;; Throw an ex-info with :msg if something goes wrong."
-(def valid-commands #{"dot" "neato" "twopi" "circo" "fdp"})
 (def output-encodings {"svg" "UTF-8"
                        "png" :bytes})
 
-(defmethod generate-graph :dot [{:keys [src program output]}]
-  ;; todo malli for validation
-  (when-not (contains? valid-commands program)
-    (throw (ex-info "Invalid command" {:data program})))
-  (when (and (some? output)
-             (not (contains? output-encodings output)))
-    (throw (ex-info "Invalid output type" {:data output})))
 
-  (let [command       (str "/usr/bin/" program)
-        output-type   (or output "svg")
-        output-param  (str "-T" output-type)
-        encoding      (get output-encodings output-type "UTF-8")
+(defmethod generate-graph :graphviz [{:keys [src program fmt]}]
+  ;; todo use malli for validation
+  ;; also validate all required params are present
+  (when-not (contains? config/graphviz-programs program)
+    (throw (ex-info "Invalid command" {:data program})))
+
+  (let [command       (get-in config/graphviz-programs [program :executable])
+        format        (config/find-format-by-parameter :id (:id fmt)) ;; don't trust anybody
+        format-param  (str "-T" (:output-format format))
+        encoding      (:file-encoding format)
         {:keys [exit
                 out
-                err]} (shell/sh command
-                                output-param
-                                :in src
-                                :out-enc encoding)]
+                err]} (shell/sh command format-param :in src :out-enc encoding)]
     (if (= 0 exit)
       out
       (throw (ex-info "Graphviz error" {:msg err})))))
