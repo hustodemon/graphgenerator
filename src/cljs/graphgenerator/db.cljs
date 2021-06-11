@@ -1,7 +1,8 @@
 (ns graphgenerator.db
   "
   Contains the initial contents of the database.
-  ")
+  "
+  (:require [graphgenerator.generator.config :as config]))
 
 
 (def programms [
@@ -148,6 +149,16 @@ digraph {
              {:id 2 :label "Programming languages" :text (nth programms 3)}]})
 
 
+(def graphviz-types
+  (map
+   (fn [[id {:keys [label]}]] {:id id :label label})
+   config/graphviz-programs))
+
+
+(def first-graphviz-type
+  (-> graphviz-types first :id))
+
+
 (def initial-db
   {:generator/graph-types         [{:id    :dot
                                     :label "Dot"}
@@ -155,20 +166,12 @@ digraph {
                                     :label "Rhizome"}]
    :generator/selected-graph-type :dot
 
-   :generator/graphviz-types         [{:id    :dot
-                                       :label "Dot"}
-                                      {:id    :neato
-                                       :label "Neato"}
-                                      {:id    :twopi
-                                       :label "Twopi"}
-                                      {:id    :circo
-                                       :label "Circo"}
-                                      {:id    :fdp
-                                       :label "FDP"}]
-   :generator/selected-graphviz-type :dot
+   ;; configured in shared config
+   :generator/graphviz-types         graphviz-types
+   :generator/selected-graphviz-type first-graphviz-type
 
    :generator/presets         presets
-   :generator/selected-preset [:dot 0]
+   :generator/selected-preset [first-graphviz-type 0]
 
    :generator/input        ""
    :generator/in-progress? false})

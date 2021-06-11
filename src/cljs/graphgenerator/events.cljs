@@ -103,13 +103,13 @@
 (rf/reg-event-fx
  :generate
  (fn [cofx [_ _]]
-   (let [db            (:db cofx)
-         selected-type (:generator/selected-graph-type db)
-         graphviz-tool (:generator/selected-graphviz-type db)]
+   (let [db               (:db cofx)
+         selected-type    (:generator/selected-graph-type db)
+         graphviz-program (:generator/selected-graphviz-type db)]
      {:http-xhrio {:method          :post
                    :uri             (str "/generate-graph"
                                          "?type=" (name selected-type)
-                                         "&tool=" (name graphviz-tool))
+                                         "&program=" (name graphviz-program))
                    :params          (get-in cofx [:db :generator/input])
                    :format          (ajax/text-request-format)
                    :response-format (ajax/raw-response-format)

@@ -1,6 +1,7 @@
 (ns graphgenerator.routes.home
   (:require
    [graphgenerator.generator.core :as generator]
+   [graphgenerator.generator.config :as config]
    [graphgenerator.layout :as layout]
    [clojure.java.io :as io]
    [graphgenerator.middleware :as middleware]
@@ -18,16 +19,28 @@
         (response/header "Content-Type" "text/plain; charset=utf-8"))))
 
 
-(defn generate-graph [req]
-  (try
-    (response/ok
-     (generator/generate-graph
-      {:type   (keyword (get-in req [:params :type]))
-       :tool   (get-in req [:params :tool])
-       :output (get-in req [:params :output])
-       :src    (:body req)}))
-    (catch Throwable e
-      (response/internal-server-error (-> e .getData :msg)))))
+(defn generate-graph
+  "
+  Handler for generating graphs.
+  Extracts important parameters from headers and query parameters.
+  The source code for the graph comes in the request body.
+  "
+  [req]
+  (let [accept-type (get-in req [:headers "accept"] "image/svg+xml")
+        graph-type  (keyword (get-in req [:params :type] "dot"))
+        program     (get-in req [:params :program])
+        format      (config/find-format-by-media-type accept-type)]
+    (try
+      {:status  200
+       :headers {"Content-Type" accept-type}
+       :body
+       (generator/generate-graph
+        {:type    graph-type
+         :program program
+         :output  (:graphviz-param format)
+         :src     (:body req)})}
+      (catch Throwable e
+        (response/internal-server-error (-> e .getData :msg))))))
 
 
 (defn home-routes []
