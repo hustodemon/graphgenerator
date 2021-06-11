@@ -38,6 +38,12 @@
 
 
 (rf/reg-event-db
+  :set-api-docs
+  (fn [db [_ docs]]
+    (assoc db :api-docs docs)))
+
+
+(rf/reg-event-db
   :common/set-value
   (fn [db [_ val & path]]
     ;; not sure if this works well for nested stuff
@@ -45,12 +51,13 @@
 
 
 (rf/reg-event-fx
-  :fetch-docs
-  (fn [_ _]
+  :fetch-document
+  (fn [_ [_ uri on-success]]
+  (prn uri)
     {:http-xhrio {:method          :get
-                  :uri             "/docs"
+                  :uri             uri
                   :response-format (ajax/raw-response-format)
-                  :on-success       [:set-docs]}}))
+                  :on-success      [on-success]}}))
 
 
 (rf/reg-event-db
@@ -58,11 +65,6 @@
   (fn [db [_ error]]
     (assoc db :common/error error)))
 
-
-(rf/reg-event-fx
-  :page/init-home
-  (fn [_ _]
-    {:dispatch [:fetch-docs]}))
 
 
 (rf/reg-event-db
@@ -140,6 +142,11 @@
   :docs
   (fn [db _]
     (:docs db)))
+
+(rf/reg-sub
+  :api-docs
+  (fn [db _]
+    (:api-docs db)))
 
 (rf/reg-sub
   :common/error

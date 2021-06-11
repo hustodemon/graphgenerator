@@ -35,18 +35,27 @@
                [:div#nav-menu.navbar-menu
                 {:class (when @expanded? :is-active)}
                 [:div.navbar-start
-                 [nav-link "#/" "Home" :home]
-                 [nav-link "#/gen" "Generator" :gen]
+                 [nav-link "#/" "Generator" :gen]
+                 [nav-link "#/docs" "Docs" :docs]
+                 [nav-link "#/api-docs" "API" :api-docs]
                  [nav-link "#/about" "About" :about]]]]))
+
 
 (defn about-page []
   [:section.section>div.container>div.content
-   [:img {:src "/img/warning_clojure.png"}]])
+   "Created by Franky with awesome Clojure tools/libs"])
 
-(defn home-page []
+
+(defn docs-page []
   [:section.section>div.container>div.content
    (when-let [docs @(rf/subscribe [:docs])]
      [:div {:dangerouslySetInnerHTML {:__html (md->html docs)}}])])
+
+
+(defn api-docs-page []
+  [:section.section>div.container>div.content
+   (when-let [api @(rf/subscribe [:api-docs])]
+     [:div {:dangerouslySetInnerHTML {:__html (md->html api)}}])])
 
 
 (defn page []
@@ -62,19 +71,23 @@
 
 (def router
   (reitit/router
-    [["/" {:name        :home
-           :view        #'home-page
-           :controllers [{:start (fn [_] (rf/dispatch [:page/init-home]))}]}]
-     ["/gen" {:name :gen
-              :view #'gen-pages/gen-page}]
-     ["/about" {:name :about
-                :view #'about-page}]]))
+   [["/" {:name :gen
+          :view #'gen-pages/gen-page}]
+    ["/docs" {:name        :docs
+              :view        #'docs-page
+              :controllers [{:start (fn [_] (rf/dispatch [:fetch-document "/docs" :set-docs]))}]}]
+    ["/api-docs" {:name        :api-docs
+                  :view        #'api-docs-page
+                  :controllers [{:start (fn [_] (rf/dispatch [:fetch-document "/api-docs" :set-api-docs]))}]}]
+    ["/about" {:name :about
+               :view #'about-page}]]))
 
 (defn start-router! []
   (rfe/start!
     router
     navigate!
     {}))
+
 
 (defn init-db! []
   (rf/dispatch [:common/set-db db/initial-db]))

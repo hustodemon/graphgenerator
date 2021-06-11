@@ -19,6 +19,7 @@
         graph-type  (keyword (get-in req [:params :type] "graphviz"))
         program     (keyword (get-in req [:params :program] "dot"))
         fmt         (config/find-format-by-parameter :media-type accept-type)]
+    ;; todo error handling and reporting
     (try
       {:status  200
        :headers {"Content-Type" accept-type}
