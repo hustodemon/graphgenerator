@@ -19,10 +19,6 @@
 ;; the Dot data (stream, string, ...).
 ;;
 ;; Throw an ex-info with :msg if something goes wrong."
-(def output-encodings {"svg" "UTF-8"
-                       "png" :bytes})
-
-
 (defmethod generate-graph :graphviz [{:keys [src program fmt]}]
   ;; todo use malli for validation
   ;; also validate all required params are present

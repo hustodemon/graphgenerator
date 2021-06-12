@@ -9,6 +9,7 @@
     [mount.core :as mount])
   (:gen-class))
 
+
 ;; log uncaught exceptions in threads
 (Thread/setDefaultUncaughtExceptionHandler
   (reify Thread$UncaughtExceptionHandler
@@ -17,9 +18,11 @@
                   :exception ex
                   :where (str "Uncaught exception on" (.getName thread))}))))
 
+
 (def cli-options
   [["-p" "--port PORT" "Port number"
     :parse-fn #(Integer/parseInt %)]])
+
 
 (mount/defstate ^{:on-reload :noop} http-server
   :start
@@ -31,6 +34,7 @@
         (select-keys [:handler :host :port])))
   :stop
   (http/stop http-server))
+
 
 (mount/defstate ^{:on-reload :noop} repl-server
   :start
@@ -47,6 +51,7 @@
     (log/info component "stopped"))
   (shutdown-agents))
 
+
 (defn start-app [args]
   (doseq [component (-> args
                         (parse-opts cli-options)
@@ -54,6 +59,7 @@
                         :started)]
     (log/info component "started"))
   (.addShutdownHook (Runtime/getRuntime) (Thread. stop-app)))
+
 
 (defn -main [& args]
   (start-app args))

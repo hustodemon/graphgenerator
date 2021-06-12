@@ -5,6 +5,9 @@
 ;; todo extract to file (+expose to frontend via HTTP) so that recompilation is not needed
 
 
+(def max-source-length-bytes 8192)
+
+
 (def formats
   [{:id :svg :file-encoding "UTF-8" :output-format "svg" :media-type "image/svg+xml"}
    {:id :png :file-encoding :bytes  :output-format "png" :media-type "image/png"}

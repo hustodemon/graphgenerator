@@ -6,7 +6,8 @@
     [re-frame.core :as rf]
     [ajax.core :as ajax]
     [reitit.frontend.easy :as rfe]
-    [reitit.frontend.controllers :as rfc]))
+    [reitit.frontend.controllers :as rfc]
+    [clojure.string :as string]))
 
 ;;dispatchers
 
@@ -105,15 +106,17 @@
  (fn [cofx [_ _]]
    (let [db               (:db cofx)
          selected-type    (:generator/selected-graph-type db)
-         graphviz-program (:generator/selected-graphviz-type db)]
+         graphviz-program (:generator/selected-graphviz-type db)
+         src              (get-in cofx [:db :generator/input])]
      {:http-xhrio {:method          :post
                    :uri             (str "/generate"
                                          "?type=" (name selected-type)
                                          "&program=" (name graphviz-program))
-                   :params          (get-in cofx [:db :generator/input])
+                   :params          src
                    :format          (ajax/text-request-format)
                    :response-format (ajax/raw-response-format)
-                   :headers         {"Accept" "image/svg+xml"}
+                   :headers         {"Accept"         "image/svg+xml"
+                                     "Content-Length" (js/stringBytesCount src)}
                    :on-success      [:set-graph]
                    :on-failure      [:set-error]}
       :db         (assoc db :generator/in-progress? true)})))

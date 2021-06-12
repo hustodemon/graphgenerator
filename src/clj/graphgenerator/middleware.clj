@@ -6,11 +6,10 @@
     [ring.middleware.anti-forgery :refer [wrap-anti-forgery]]
     [graphgenerator.middleware.formats :as formats]
     [muuntaja.middleware :refer [wrap-format wrap-params]]
-    [graphgenerator.config :refer [env]]
     [ring.middleware.flash :refer [wrap-flash]]
     [ring.adapter.undertow.middleware.session :refer [wrap-session]]
-    [ring.middleware.defaults :refer [site-defaults wrap-defaults]])
-  )
+    [ring.middleware.defaults :refer [site-defaults wrap-defaults]]))
+
 
 (defn wrap-internal-error [handler]
   (fn [req]
@@ -21,6 +20,7 @@
         (error-page {:status 500
                      :title "Something very bad has happened!"
                      :message "We've dispatched a team of highly trained gnomes to take care of the problem."})))))
+
 
 (defn wrap-csrf [handler]
   (wrap-anti-forgery
@@ -37,6 +37,7 @@
       ;; disable wrap-formats for websockets
       ;; since they're not compatible with this middleware
       ((if (:websocket? request) handler wrapped) request))))
+
 
 (defn wrap-base [handler]
   (-> ((:middleware defaults) handler)
