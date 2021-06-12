@@ -9,7 +9,7 @@
     [graphgenerator.events]))
 
 
-(defn- text-area []
+(defn- input-area []
   (let [text (rf/subscribe [:generator/input])]
     (fn []
       [rc/input-textarea
@@ -83,39 +83,48 @@
                                      :generator/selected-graphviz-type]))]]))))
 
 
-(defn gen-page []
+(defn params-area []
+  (let [in-progress? (rf/subscribe [:generator/in-progress?])]
+    [rc/v-box
+     :gap "10px"
+     :children
+     [[selection]
+      [graphviz-tool-selection]
+      [presets]
+      [rc/button
+       :label "Generate!"
+       :disabled? @in-progress?
+       :on-click #(rf/dispatch [:generate])
+       :class "btn-primary"
+       :style {:width "200px"}]]]))
+
+
+
+(defn output-area []
   (let [graph        (rf/subscribe [:graph])
         in-progress? (rf/subscribe [:generator/in-progress?])]
     (fn []
-      [:section.section>div.container>div.content
-       [rc/v-box
-        :gap "20px"
-        :align :center
-        :children
-        [[rc/h-box
-          :gap "10px"
-        :align :center
-          :children
-          [[text-area]
-           [rc/v-box
-            :gap "10px"
-            :children
-            [[selection]
-             [graphviz-tool-selection]
-             [presets]
-             [rc/button
-              :label "Generate!"
-              :disabled? @in-progress?
-              :on-click #(rf/dispatch [:generate])
-              :class "btn-primary"
-              :style {:width "200px"}]
-             ]]
-           ]]
+      [:div
+       (if @in-progress?
+         [rc/throbber
+          :size :large
+          :style {:text-align "center"}]
          [:div
-          (if @in-progress?
-            [rc/throbber
-             :size :large
-             :style {:text-align "center"}]
-            [:div
-             {:dangerouslySetInnerHTML {:__html @graph}
-              :style                   {:text-align "center"}}])]]]])))
+          {:dangerouslySetInnerHTML {:__html @graph}
+           :style                   {:text-align "center"}}])])))
+
+
+
+(defn gen-page []
+  [:section.section>div.container>div.content
+   [rc/v-box
+    :gap "20px"
+    :align :center
+    :children
+    [[rc/h-box
+      :gap "10px"
+      :align :center
+      :children
+      [[input-area]
+       [params-area]]]
+     [output-area]]]])
