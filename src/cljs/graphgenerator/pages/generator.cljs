@@ -99,20 +99,22 @@
        :style {:width "200px"}]]]))
 
 
-
 (defn output-area []
   (let [graph        (rf/subscribe [:graph])
-        in-progress? (rf/subscribe [:generator/in-progress?])]
+        in-progress? (rf/subscribe [:generator/in-progress?])
+        error        (rf/subscribe [:generator/error])]
     (fn []
       [:div
-       (if @in-progress?
-         [rc/throbber
-          :size :large
-          :style {:text-align "center"}]
-         [:div
-          {:dangerouslySetInnerHTML {:__html @graph}
-           :style                   {:text-align "center"}}])])))
-
+       (cond
+         (some? @error) [rc/alert-box
+                         :alert-type :danger
+                         :body @error]
+         @in-progress?  [rc/throbber
+                         :size :large
+                         :style {:text-align "center"}]
+         :else          [:div
+                         {:dangerouslySetInnerHTML {:__html @graph}
+                          :style                   {:text-align "center"}}])])))
 
 
 (defn gen-page []

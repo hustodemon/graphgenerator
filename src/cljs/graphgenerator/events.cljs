@@ -90,6 +90,7 @@
  :set-graph
  (fn [db [_ graph]]
    (-> db
+       (dissoc :generator/error)
        (assoc :graph graph)
        (assoc :generator/in-progress? false))))
 
@@ -97,8 +98,9 @@
 (rf/reg-event-db
  :set-error
  (fn [db [_ err]]
-   (js/alert (:response err))
-   (assoc db :generator/in-progress? false)))
+   (-> db
+       (assoc :generator/error (:response err))
+       (assoc :generator/in-progress? false))))
 
 
 (rf/reg-event-fx
@@ -195,6 +197,11 @@
  :generator/selected-preset
   (fn [db _]
     (:generator/selected-preset db)))
+
+(rf/reg-sub
+ :generator/error
+  (fn [db _]
+    (:generator/error db)))
 
 (rf/reg-sub
  :generator/in-progress?
