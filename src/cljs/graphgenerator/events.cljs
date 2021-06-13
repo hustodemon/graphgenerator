@@ -99,7 +99,7 @@
  (fn [db [_ graph]]
    (-> db
        (dissoc :generator/error)
-       (assoc :graph graph)
+       (assoc :generator/graph graph)
        (assoc :generator/in-progress? false))))
 
 
@@ -135,7 +135,7 @@
 (rf/reg-event-fx
   :generator/invoke-graph-download
   (fn [cofx [_]]
-    (let [graph (get-in cofx [:db :graph])]
+    (let [graph (get-in cofx [:db :generator/graph])]
       (js/downloadURI
        (create-data-uri graph "application/svg+xml")
        "graphgenerator.svg"))))
@@ -176,9 +176,9 @@
     (:common/error db)))
 
 (rf/reg-sub ;;; todo maybe scratch
-  :graph
+  :generator/graph
   (fn [db _]
-    (:graph db)))
+    (:generator/graph db)))
 
 (rf/reg-sub
   :generator/input

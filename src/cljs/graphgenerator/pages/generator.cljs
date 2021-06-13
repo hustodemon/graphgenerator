@@ -86,7 +86,7 @@
 
 (defn params-area []
   (let [in-progress? (rf/subscribe [:generator/in-progress?])
-        graph        (rf/subscribe [:graph])
+        graph        (rf/subscribe [:generator/graph])
         error        (rf/subscribe [:generator/error])]
     [rc/v-box
      :gap "10px"
@@ -109,7 +109,7 @@
 
 
 (defn output-area []
-  (let [graph        (rf/subscribe [:graph])
+  (let [graph        (rf/subscribe [:generator/graph])
         in-progress? (rf/subscribe [:generator/in-progress?])
         error        (rf/subscribe [:generator/error])]
     (fn []
