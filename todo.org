@@ -1,9 +1,15 @@
-* TODO error handlers
-* TODO input validations (e.g. length)
-* TODO node/edge customizations for rhizome (presets for start)
-* TODO :options customization
-* TODO download option
-* TODO content type/accept type take into account
-* TODO persist history
-* TODO logging
+* Top prio
+** DONE Custom examples (FSA)
+** DONE Get rid of the figwheel welcome screen in production
+
+* Tasks
+** TODO C-E to run the program
+** TODO poor man's autoindent
+** TODO error handlers
+** TODO node/edge customizations for rhizome (presets for start)
+** TODO download option
+** TODO persist history
+** TODO logging
+** DONE content type/accept type take into account
+** DONE input validations (e.g. length)
 

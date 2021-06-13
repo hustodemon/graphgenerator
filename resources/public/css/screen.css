@@ -33,3 +33,6 @@ body {
   -moz-osx-font-smoothing: grayscale;
 }
 
+.center {
+    text-align: center;
+}
