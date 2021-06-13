@@ -1,15 +1,18 @@
-* Top prio
+* Top prio (ordered)
+** TODO Console: Attempt to set a forbidden header was denied: Content-Length
+** DONE download option
 ** DONE Custom examples (FSA)
 ** DONE Get rid of the figwheel welcome screen in production
 
-* Tasks
+* Tasks (unordered)
+** TODO Extract gen to namespace & Push to github
 ** TODO C-E to run the program
 ** TODO poor man's autoindent
 ** TODO error handlers
 ** TODO node/edge customizations for rhizome (presets for start)
-** TODO download option
 ** TODO persist history
 ** TODO logging
+** TODO download action supports png/pdf/...
 ** DONE content type/accept type take into account
 ** DONE input validations (e.g. length)
 

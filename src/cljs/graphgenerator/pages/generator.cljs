@@ -3,10 +3,11 @@
   The UI related to the generator
   "
   (:require
+    [graphgenerator.events]
     [day8.re-frame.http-fx]
     [re-frame.core :as rf]
     [re-com.core :as rc]
-    [graphgenerator.events]))
+    [clojure.string :as string]))
 
 
 (defn- input-area []
@@ -84,7 +85,9 @@
 
 
 (defn params-area []
-  (let [in-progress? (rf/subscribe [:generator/in-progress?])]
+  (let [in-progress? (rf/subscribe [:generator/in-progress?])
+        graph        (rf/subscribe [:graph])
+        error        (rf/subscribe [:generator/error])]
     [rc/v-box
      :gap "10px"
      :children
@@ -95,6 +98,12 @@
        :label "Generate!"
        :disabled? @in-progress?
        :on-click #(rf/dispatch [:generate])
+       :class "btn-primary"
+       :style {:width "200px"}]
+      [rc/button
+       :label "Download"
+       :disabled? (or (string/blank? @graph) (some? @error) @in-progress?)
+       :on-click #(rf/dispatch [:generator/invoke-graph-download])
        :class "btn-primary"
        :style {:width "200px"}]]]))
 

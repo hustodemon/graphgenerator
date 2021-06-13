@@ -74,6 +74,14 @@
    new-db))
 
 
+;; todo extract utils (look for other suspects in this ns)
+(defn create-data-uri [content media-type]
+  (.createObjectURL
+   js/URL
+   (js/Blob. (clj->js [content])
+             (clj->js {"type" media-type}))))
+
+
 (rf/reg-event-db
   :generator/select-preset
   (fn [db [_ [preset-graph-type preset-id]]]
@@ -122,6 +130,15 @@
                    :on-success      [:set-graph]
                    :on-failure      [:set-error]}
       :db         (assoc db :generator/in-progress? true)})))
+
+
+(rf/reg-event-fx
+  :generator/invoke-graph-download
+  (fn [cofx [_]]
+    (let [graph (get-in cofx [:db :graph])]
+      (js/downloadURI
+       (create-data-uri graph "application/svg+xml")
+       "graphgenerator.svg"))))
 
 
 ;;subscriptions
