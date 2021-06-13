@@ -32,7 +32,6 @@
 
     <script type="text/javascript">
         var csrfToken = "{{csrf-token}}";
-        var stringBytesCount = (s) => encodeURI(s).split(/%..|./).length - 1;
         function downloadURI(uri, name) {
             var link = document.createElement("a");
             link.download = name;

@@ -122,8 +122,7 @@
                    :params          src
                    :format          (ajax/text-request-format)
                    :response-format (ajax/raw-response-format)
-                   :headers         {"Accept"         "image/svg+xml"
-                                     "Content-Length" (js/stringBytesCount src)}
+                   :headers         {"Accept" "image/svg+xml"}
                    :on-success      [:generator/set-graph]
                    :on-failure      [:generator/set-error]}
       :db         (assoc db :generator/in-progress? true)})))
