@@ -97,7 +97,7 @@
       [rc/button
        :label "Generate!"
        :disabled? @in-progress?
-       :on-click #(rf/dispatch [:generate])
+       :on-click #(rf/dispatch [:generator/generate])
        :class "btn-primary"
        :style {:width "200px"}]
       [rc/button

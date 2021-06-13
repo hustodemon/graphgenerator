@@ -6,8 +6,7 @@
     [re-frame.core :as rf]
     [ajax.core :as ajax]
     [reitit.frontend.easy :as rfe]
-    [reitit.frontend.controllers :as rfc]
-    [clojure.string :as string]))
+    [reitit.frontend.controllers :as rfc]))
 
 ;;dispatchers
 
@@ -54,7 +53,6 @@
 (rf/reg-event-fx
   :fetch-document
   (fn [_ [_ uri on-success]]
-  (prn uri)
     {:http-xhrio {:method          :get
                   :uri             uri
                   :response-format (ajax/raw-response-format)
@@ -67,7 +65,6 @@
     (assoc db :common/error error)))
 
 
-
 (rf/reg-event-db
  :common/set-db
  (fn [_ [_ new-db]]
@@ -75,7 +72,7 @@
 
 
 ;; todo extract utils (look for other suspects in this ns)
-(defn create-data-uri [content media-type]
+(defn- create-data-uri [content media-type]
   (.createObjectURL
    js/URL
    (js/Blob. (clj->js [content])
@@ -95,7 +92,7 @@
 
 
 (rf/reg-event-db
- :set-graph
+ :generator/set-graph
  (fn [db [_ graph]]
    (-> db
        (dissoc :generator/error)
@@ -104,7 +101,7 @@
 
 
 (rf/reg-event-db
- :set-error
+ :generator/set-error
  (fn [db [_ err]]
    (-> db
        (assoc :generator/error (:response err))
@@ -112,7 +109,7 @@
 
 
 (rf/reg-event-fx
- :generate
+ :generator/generate
  (fn [cofx [_ _]]
    (let [db               (:db cofx)
          selected-type    (:generator/selected-graph-type db)
@@ -127,8 +124,8 @@
                    :response-format (ajax/raw-response-format)
                    :headers         {"Accept"         "image/svg+xml"
                                      "Content-Length" (js/stringBytesCount src)}
-                   :on-success      [:set-graph]
-                   :on-failure      [:set-error]}
+                   :on-success      [:generator/set-graph]
+                   :on-failure      [:generator/set-error]}
       :db         (assoc db :generator/in-progress? true)})))
 
 
