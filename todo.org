@@ -1,7 +1,5 @@
 * Top prio (ordered)
-** TODO Cleanup files
 ** TODO Bring more structure to the frontend namespaces
-** TODO Push to github
 ** TODO Add tests
 ** TODO logging (need for some of PipedInputStream)
 
@@ -15,6 +13,8 @@
 ** DONE input validations (e.g. length)
 
 * Done
+** DONE Push to github
+** DONE Cleanup files
 ** DONE Improve the FSA example
 ** DONE C-E to run the program
 ** DONE Console: Attempt to set a forbidden header was denied: Content-Length
