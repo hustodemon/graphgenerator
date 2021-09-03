@@ -3,6 +3,7 @@
    [graphgenerator.generator.core :as generator]
    [graphgenerator.generator.config :as config]
    [graphgenerator.middleware :as middleware]
+   [clojure.tools.logging :as log]
    [ring.util.response]
    [ring.util.http-response :as response]))
 
@@ -32,13 +33,14 @@
 
       :else
       (try
-        {:status  200
-         :headers {"Content-Type" accept-type}
-         :body    (generator/generate-graph
-                   {:type    graph-type
-                    :program program
-                    :fmt     fmt
-                    :src     (:body req)})}
+        (let [params {:type    graph-type
+                      :program program
+                      :fmt     fmt
+                      :src     (:body req)}]
+          (log/info (str "Generating graph from params: " params))
+          {:status  200
+           :headers {"Content-Type" accept-type}
+           :body    (generator/generate-graph params)})
         (catch clojure.lang.ExceptionInfo e
           (response/internal-server-error (-> e .getData :msg)))))))
 
