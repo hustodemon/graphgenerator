@@ -13,13 +13,17 @@
 (defn- input-area []
   (let [text (rf/subscribe [:generator/input])]
     (fn []
-      [rc/input-textarea
-       :model text
-       :on-change (fn [val]
-                    (rf/dispatch [:common/set-value val :generator/input]))
-       :width "800px"
-       :height "400px"
-       :style {:font-family "Consolas, Lucida Console, monospace"}])))
+      [:textarea.graph-input-area.rc-input-text-field
+       {:value       @text
+        :on-change   (fn [evt]
+                       (rf/dispatch [:common/set-value
+                                     (-> evt .-target .-value)
+                                     :generator/input]))
+        :on-keyPress (fn [evt]
+                       (when (and
+                              (.-ctrlKey evt)
+                              (= 0 (.-keyCode evt)))
+                         (rf/dispatch [:generator/generate])))}])))
 
 
 (defn- presets []
@@ -95,7 +99,7 @@
       [graphviz-tool-selection]
       [presets]
       [rc/button
-       :label "Generate!"
+       :label "Generate (Ctrl+Enter)"
        :disabled? @in-progress?
        :on-click #(rf/dispatch [:generator/generate])
        :class "btn-primary"
