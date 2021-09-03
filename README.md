@@ -2,7 +2,7 @@
 
 Simple webapp for generating graphs.
 
-Runs graphviz via shell under the hood (ALWAYS run the graphgenerator in isolation!).
+Runs graphviz via shell under the hood (ALWAYS run the graphgenerator in isolation (e.g. in a chroot or container)!).
 
 
 ## Prerequisites
