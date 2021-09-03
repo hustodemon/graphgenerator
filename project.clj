@@ -7,7 +7,7 @@
                  [cljsjs/ace "1.4.2-0"]
                  [re-com "2.13.2"]
                  
-                 ;; luminus shit below
+                 ;; luminus stuff below
                  [ch.qos.logback/logback-classic "1.2.3"]
                  [cljs-ajax "0.8.3"]
                  [clojure.java-time "0.3.2"]
