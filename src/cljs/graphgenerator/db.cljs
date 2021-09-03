@@ -29,7 +29,7 @@ digraph {
 
     a[label=\"Menu\\ndisplayed\", shape=\"doublecircle\"]
     b[label=\"Game\\nrunning\", shape=\"circle\"]
-    c[label=\"Rebooting\", shape=\"doublecircle\"]
+    c[label=\"Rebooting\", shape=\"circle\"]
 
     a -> b [label=\"Press start\\n& insert coin\"];
     b -> b [label=\"Insert coin\"];
@@ -139,10 +139,18 @@ node1320 -> node1309[label=\"\"]
 
 
 (def presets
-  {:graphviz [{:id 1 :label "Undirected graph" :text (nth programms 0)}
-              {:id 2 :label "FSA" :text (nth programms 1)}
-              {:id 3 :label "Clustering" :text (nth programms 2)}]
-   :rhizome  [{:id 1 :label "Simple directed graph" :text (nth programms 3)}]})
+  {:graphviz [{:id    1
+               :label "Undirected graph"
+               :text  (nth programms 0)}
+              {:id    2
+               :label "FSA"
+               :text  (nth programms 1)}
+              {:id    3
+               :label "Clustering"
+               :text  (nth programms 2)}]
+   :rhizome  [{:id    1
+               :label "Simple directed graph"
+               :text  (nth programms 3)}]})
 
 
 (def graphviz-types
